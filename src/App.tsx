@@ -10,10 +10,10 @@ const Wrapper = styled.div`
 	height: 100vh;
 `;
 
-const Box = styled.div`
+const Box = styled(motion.div)`
 	width: 200px;
 	height: 200px;
-	border-radius: 10px;
+	border-radius: 15px;
 	box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
 	background-color: #fff;
 `;
@@ -21,8 +21,11 @@ const Box = styled.div`
 function App() {
 	return (
 		<Wrapper>
-			<Box />
-			<motion.div />
+			<Box
+				initial={{ scale: 0 }}
+				animate={{ scale: 1, rotate: 360 }}
+				transition={{ type: "spring", delay: 0.5 }}
+			/>
 		</Wrapper>
 	);
 }
