@@ -27,12 +27,12 @@ const Box = styled(motion.div)`
 `;
 
 const box = {
-	invisible: {
+	entry: (isBack: boolean) => ({
+		x: isBack ? -500 : 500,
 		scale: 0,
 		opacity: 0,
-		x: 500,
-	},
-	visible: {
+	}),
+	center: {
 		scale: 1,
 		opacity: 1,
 		x: 0,
@@ -40,36 +40,39 @@ const box = {
 			duration: 1,
 		},
 	},
-	exit: {
+	exit: (isBack: boolean) => ({
+		x: isBack ? 500 : -500,
 		scale: 0,
 		opacity: 0,
-		x: -500,
-		transition: {
-			duration: 1,
-		},
-	},
+		transition: { duration: 0.3 },
+	}),
 };
 
 function App() {
 	const [visible, setVisible] = useState(1);
-	const nextPlease = () => setVisible((prev) => (prev === 10 ? 10 : prev + 1));
-	const prevPlease = () => setVisible((prev) => (prev === 1 ? 1 : prev - 1));
+	const [back, setBack] = useState(false);
+	const nextPlease = () => {
+		setBack(false);
+		setVisible((prev) => (prev === 10 ? 10 : prev + 1));
+	};
+	const prevPlease = () => {
+		setBack(true);
+		setVisible((prev) => (prev === 1 ? 1 : prev - 1));
+	};
+
 	return (
 		<Wrapper>
-			<AnimatePresence>
-				{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) =>
-					i === visible ? (
-						<Box
-							variants={box}
-							initial="invisible"
-							animate="visible"
-							exit="exit"
-							key={i}
-						>
-							{i}
-						</Box>
-					) : null
-				)}
+			<AnimatePresence mode="wait" custom={back}>
+				<Box
+					custom={back}
+					variants={box}
+					initial="entry"
+					animate="center"
+					exit="exit"
+					key={visible}
+				>
+					{visible}
+				</Box>
 			</AnimatePresence>
 			<button onClick={nextPlease}>Next</button>
 			<button onClick={prevPlease}>Prev</button>
@@ -78,3 +81,5 @@ function App() {
 }
 
 export default App;
+
+// custom : variants에 데이터를 보낼 수 있게 해주는 property
